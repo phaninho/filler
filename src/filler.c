@@ -6,16 +6,19 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/23 17:22:26 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/23 18:30:46 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-int			main(int ac, char **av)
+int			main()
 {
-	(void)ac;
-	(void)av;
-	ft_putstr("ok\n");
+	char	*buff;
+
+	while (get_next_line(0, &buff) > 0)
+	{
+	
+	}
 	return (0);
 }
