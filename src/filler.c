@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 17:50:11 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 17:55:55 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,15 +143,19 @@ int			main()
 		ft_putnbr_fd(i, 2);
 		ft_putstr_fd("||||---------||||", 2);
 		ft_putendl_fd(e.board[i], 2);
+		free(e.board[i]);
 		i++;
 	}
+	free(e.board[i]);
 	i = 0;
 	while (e.piece[i])
 	{
 		ft_putnbr_fd(i, 2);
 		ft_putstr_fd("||||---------||||", 2);
 		ft_putendl_fd(e.piece[i], 2);
+		free(e.piece[i]);
 		i++;
 	}
+	free(e.piece);
 	return (0);
 }
