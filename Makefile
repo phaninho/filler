@@ -6,7 +6,7 @@
 #    By: stmartin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/04 14:21:39 by stmartin          #+#    #+#              #
-#    Updated: 2016/11/23 17:30:55 by stmartin         ###   ########.fr        #
+#    Updated: 2016/11/25 11:18:42 by stmartin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRC_NAME = filler.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 LIB_NAME = -lft -lmlx
-NAME = stmartin.filler
+NAME = filler_ressources/players/stmartin.filler
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH),$(OBJ_NAME))
