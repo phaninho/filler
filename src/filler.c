@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 16:50:40 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 17:43:46 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,47 @@ void		fill_board(t_env *e)
 	free(lnb);
 }
 
+void		fill_piece(t_env *e, int x, int y)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	while (get_next_line(0, &(e)->buff) > 0 && i < y)
+	{
+		j = 0;
+		while (j < x)
+		{
+			e->piece[i][j] = e->buff[j];
+			j++;
+		}
+		i++;
+	}
+}
+
 void		add_piece(t_env *e)
 {
 	char	*addr;
 	int		x;
 	int		y;
+	int		i;
 
+	i = 0;
 	addr = ft_strchr(e->buff, ' ');
 	y = ft_atoi(addr++);
 	addr = ft_strchr(addr, ' ');
 	x = ft_atoi(addr++);
+	e->piece = (char **)malloc(sizeof(char *) * (y + 1));
+	e->piece[y] = NULL;
+	while (i < y)
+	{
+		e->piece[i] = (char *)malloc(sizeof(char) * (x + 1));
+		e->piece[i][x] = '\0';
+		i++;
+	}
+	fill_piece(e, x, y);
 }
+
 
 #include <stdio.h>
 void		call_fctn(t_env *e, char c)
@@ -85,9 +115,9 @@ void		call_fctn(t_env *e, char c)
 		fill_board(e);
 	else if (e->buff[0] == 'P' && e->buff[1] == 'i')
 		add_piece(e);
+//	else
+//		play_mf(e, c);
 
-
-	 fprintf(stderr , "----[%s]------\n", e->buff);
 	(void)c;
 }
 
@@ -99,13 +129,27 @@ int			main()
 	if (get_next_line(0, &(e).buff) > 0)
 		c = e.buff[10] == '1' ? 'o' : 'x';
 	while (get_next_line(0, &(e).buff) > 0)
+	 fprintf(stderr , "----[%s]------\n", e->buff);
 		call_fctn(&e, c);
+
+
+
+
 	int i = 0;
-	while (e.board && (i < 15))
+	while (e.board[i])
 	{
 		ft_putnbr_fd(i, 2);
 		ft_putstr_fd("||||---------||||", 2);
 		ft_putendl_fd(e.board[i], 2);
 		i++;
-	}return (0);
+	}
+	i = 0;
+	while (e.piece[i])
+	{
+		ft_putnbr_fd(i, 2);
+		ft_putstr_fd("||||---------||||", 2);
+		ft_putendl_fd(e.piece[i], 2);
+		i++;
+	}
+	return (0);
 }
