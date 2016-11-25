@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 16:35:23 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 16:37:01 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void		board_alloc(t_env *e)
 	int		y;
 	int		i;
 
-	i = 0;
+	i = -1;
 	if (e->buff[9] == '5')
 	{
 		x = 17;
@@ -36,11 +36,10 @@ void		board_alloc(t_env *e)
 	}
 	e->board = (char **)malloc(sizeof(char *) * (y + 1));
 	e->board[y] = NULL;
-	while (i < y)
+	while (++i < y)
 	{
 		e->board[i] = (char *)malloc(sizeof(char ) * (x + 1));
 		e->board[i][x] = '\0';
-		i++;
 	}
 }
 
