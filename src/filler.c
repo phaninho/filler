@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 16:15:54 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 16:35:23 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void		board_alloc(t_env *e)
 		e->board[i][x] = '\0';
 		i++;
 	}
-		ft_putstr_fd("laaaaaaaaaaaaaaaaaaa", 2);
 }
 
 void		fill_board(t_env *e)
@@ -70,12 +69,11 @@ void		call_fctn(t_env *e, char c)
 {
 	if (e->buff[0] =='P' && e->buff[1] == 'l')
 		board_alloc(e);
-
-	fprintf(stderr , "----[%s]------\n", e->buff);
-
-	 if (e->buff[0] == ' ' || e->buff[0] == '0')
+	else if (e->buff[0] == ' ' || e->buff[0] == '0')
 		fill_board(e);
-	
+
+
+	 fprintf(stderr , "----[%s]------\n", e->buff);
 	(void)c;
 }
 
