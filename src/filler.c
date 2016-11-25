@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 16:37:01 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 16:50:40 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,19 @@ void		fill_board(t_env *e)
 	}
 	free(lnb);
 }
+
+void		add_piece(t_env *e)
+{
+	char	*addr;
+	int		x;
+	int		y;
+
+	addr = ft_strchr(e->buff, ' ');
+	y = ft_atoi(addr++);
+	addr = ft_strchr(addr, ' ');
+	x = ft_atoi(addr++);
+}
+
 #include <stdio.h>
 void		call_fctn(t_env *e, char c)
 {
@@ -70,6 +83,8 @@ void		call_fctn(t_env *e, char c)
 		board_alloc(e);
 	else if (e->buff[0] == ' ' || e->buff[0] == '0')
 		fill_board(e);
+	else if (e->buff[0] == 'P' && e->buff[1] == 'i')
+		add_piece(e);
 
 
 	 fprintf(stderr , "----[%s]------\n", e->buff);

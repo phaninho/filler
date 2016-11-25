@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 17:00:45 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/25 14:59:26 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/25 16:40:19 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef struct		s_env
 {
 	char	**board;
 	char	*buff;
+	char	**piece;
 }					t_env;
 
 #endif
