@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/29 17:10:48 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/29 18:52:11 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,30 +59,75 @@ void		fill_board(t_env *e)
 	free(lnb);
 }
 #include <stdio.h>
+
+int			compare_board_and_piece(t_env *e, int bx, int by, char c)
+{
+	int		x;
+	int		y;
+	int		ret;
+
+	x = e->px;
+	y = e->py;
+	ret = e->spx * e->spy; // pour parcourir tous les elements de la piece
+	if (bx - x < 0 || by - y < 0 || bx - x + e->spx > e->sbx || by - y + e->spy > e->sby)
+		return (0);
+	if (e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == c)
+	{
+		ret--;
+		x++;
+	}
+	while (y < e->spy)
+	{
+		while (x < e->spx)
+		{
+			if (e->piece[y][x] == '.')
+				ret--;
+			else if (e->piece[y][x] == '*' && e->board[y + by][x + bx] == '.')
+				ret--;
+			else if (e->board[by + y][bx + x] != '.' && e->piece[y][x] == '*')
+				return (0);
+	//	ft_putstr_fd("il n a pas ete possible de poser la piece [", 2);
+	//	ft_putnbr_fd(ret, 2);
+	//			ft_putendl_fd("]", 2);
+			if (!ret)
+			{
+				e->playx = bx - e->px;
+				e->playy = by - e->py;
+				ft_putnbr_fd(e->playy, 2);
+				ft_putchar_fd(' ', 2);
+				ft_putnbr_fd(e->playx, 2);
+				ft_putchar_fd('\n', 2);
+				return (1);
+			}
+			x++;
+		}
+		x = 0;
+		y++;
+	}
+	return (0);
+}
+
 void		play_mf(t_env *e, char c)
 {
 	int		x;
 	int		y;
+	int		ret;
 
+	ret = 0;
 	y = 0;
-	while (e->board[y])
+	while (!ret && e->board[y])
 	{
 		x = 0;
-	//	fprintf(stderr, "entre x:%d y:%d [", x, y);
-	//	ft_putchar_fd(e->board[0][16], 2);
-	//	ft_putchar_fd(']', 2);
-		while (e->board[y][x])
+		while (!ret && e->board[y][x])
 		{
-			if (e->board[y][x] == ft_toupper(c))
-			{
-			fprintf(stderr, "il est la x:%d y:%d [%c]\n", x, y, e->board[y][x]);
-				break;
-			}
-			fprintf(stderr, "x:%d y:%d [%c]\n", x, y, e->board[y][x]);
+			if (!ret && (e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+				ret = compare_board_and_piece(e, x, y, c);
 			x++;
 		}
 		y++;
 	}
+	if (ret)
+		ft_putendl_fd("il n a pas ete possible de poser la piece", 2);
 }
 
 void		fill_piece(t_env *e)
@@ -157,7 +202,7 @@ int			main()
 
 
 
-
+/*
 	int i = 0;
 	while (e.board[i])
 	{
@@ -176,7 +221,7 @@ int			main()
 		ft_putendl_fd(e.piece[i], 2);
 		free(e.piece[i]);
 		i++;
-	}
+	}*/
 	free(e.piece);
 	return (0);
 }

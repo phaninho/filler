@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 17:00:45 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/29 15:44:50 by stmartin         ###   ########.fr       */
+/*   Updated: 2016/11/29 17:51:10 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ typedef struct		s_env
 	int		py;
 	int		spx;
 	int		spy;
+	int		playx;
+	int		playy;
 }					t_env;
 
 #endif
