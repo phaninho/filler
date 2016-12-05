@@ -35,7 +35,7 @@ void		board_alloc(t_env *e, int i)
 	{
 		e->board[i] = (char *)malloc(sizeof(char) * (e->sbx + 1));
 		e->board[i][e->sbx] = '\0';
-	}
+	}//ft_putstr_fd("demarage de boardaloc\n", 2);
 }
 
 void		fill_board(t_env *e)
@@ -55,13 +55,13 @@ void		fill_board(t_env *e)
 			e->board[ft_atoi(lnb)][i] = e->buff[i + 4];
 			i++;
 		}
-	}
+	}//ft_putstr_fd("demarage de fill_board\n", 2);
 	free(lnb);
 }
 #include <stdio.h>
 
 int			compare_board_and_piece(t_env *e, int bx, int by, char c)
-{
+{//ft_putstr_fd("demarage de compare b and p\n", 2);
 	int		x;
 	int		y;
 	int		ret;
@@ -69,95 +69,111 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 	x = e->px;
 	y = e->py;
 	ret = e->spx * e->spy; // pour parcourir tous les elements de la piece
+//	ft_putstr_fd("ret au debut [", 2);
+	//ft_putnbr_fd(ret, 2);
+		//	ft_putendl_fd("]", 2);
 	if (bx - x < 0 || by - y < 0 || bx - x + e->spx > e->sbx || by - y + e->spy > e->sby)
-		return (0);
+		return (ret);
 	if (e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == c)
 	{
 		ret--;
-		x++;
+		bx = bx - e->px;
+		by = by - e->py;
+		x = 0;
+		y = 0;
+	//	ft_putstr_fd("ret au premier dec [", 2);
+	//	ft_putnbr_fd(ret, 2);
+				//ft_putendl_fd("]", 2);
 	}
 	while (y < e->spy)
-	{
+	{ //boucle infini
 		while (x < e->spx)
 		{
 			if (e->piece[y][x] == '.')
 				ret--;
 			else if (e->piece[y][x] == '*' && e->board[y + by][x + bx] == '.')
 				ret--;
-			else if (e->board[by + y][bx + x] != '.' && e->piece[y][x] == '*')
-				return (0);
-	//	ft_putstr_fd("il n a pas ete possible de poser la piece [", 2);
+		/*	else if (x != e->px && y != e->py && e->board[by + y][bx + x] != '.' && e->piece[y][x] == '*')
+				return (ret);
+			*/
+			x++;//ft_putstr_fd("ret dans while x[", 2);
+		//	ft_putnbr_fd(ret, 2);
+				//	ft_putendl_fd("]", 2);
+					if (!ret)
+					{
+						e->playx = bx - e->px;
+						e->playy = by - e->py;
+
+						//ft_putchar('\n');
+						return (ret);
+					}
+
+		}//ft_putstr_fd("ret dans while y[", 2);
 	//	ft_putnbr_fd(ret, 2);
-	//			ft_putendl_fd("]", 2);
-			if (!ret)
-			{
-				e->playx = bx - e->px;
-				e->playy = by - e->py;
-				ft_putnbr_fd(e->playy, 2);
-				ft_putchar_fd(' ', 2);
-				ft_putnbr_fd(e->playx, 2);
-				ft_putchar_fd('\n', 2);
-				return (1);
-			}
-			x++;
-		}
+				//ft_putendl_fd("]", 2);
 		x = 0;
 		y++;
+
 	}
-	return (0);
+	//ft_putstr_fd("sortiiiiiiiiii\n", 2);
+	return (ret);
 }
 
 void		play_mf(t_env *e, char c)
 {
+	//ft_putstr_fd("demarage de playmf\n", 2);
 	int		x;
 	int		y;
 	int		ret;
 
-	ret = 0;
+	ret = -1;
 	y = 0;
-	while (!ret && e->board[y])
+	while (ret && e->board[y])
 	{
 		x = 0;
-		while (!ret && e->board[y][x])
+		while (ret && e->board[y][x])
 		{
-			if (!ret && (e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			if (ret && (e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 				ret = compare_board_and_piece(e, x, y, c);
+				//ft_putstr_fd("ret dans playmf[", 2);
+				//ft_putnbr_fd(ret, 2);
+				//		ft_putendl_fd("]", 2);
 			x++;
 		}
 		y++;
 	}
-	if (ret)
-		ft_putendl_fd("il n a pas ete possible de poser la piece", 2);
 }
 
 void		fill_piece(t_env *e)
 {
-	int		i;
-	int		j;
+	int		y;
+	int		x;
 	int		r;
 
 	r = 0;
-	i = 0;
-	while (get_next_line(0, &(e)->buff) > 0 && i < e->spy)
+	y = 0;
+	while (y < e->spy && get_next_line(0, &(e)->buff) > 0)
 	{
-		j = 0;
-		while (j < e->spx)
+		x = 0;
+		while (x < e->spx)
 		{
-			e->piece[i][j] = e->buff[j];
-			if (!r && e->piece[i][j] == '*')
+			e->piece[y][x] = e->buff[x];
+			if (!r && e->piece[y][x] == '*')
 			{
-				e->px = j;
-				e->py = i;
+				e->px = x;
+				e->py = y;
 				r = 1;
 			}
-			j++;
+			x++;
 		}
-		i++;
+		y++;
 	}
+	//ft_putstr_fd("sort de fill piece\n", 2);
+	e->out = 1;
 }
 
 void		add_piece(t_env *e)
-{
+{//ft_putstr_fd("demarage de addpiece\n", 2);
 	char	*addr;
 	int		i;
 
@@ -180,7 +196,8 @@ void		add_piece(t_env *e)
 
 
 void		call_fctn(t_env *e)
-{
+{//ft_putstr_fd("demarage de callfctn\n", 2);
+fprintf(stderr , "----[%s]------\n", e->buff);
 	if (e->buff[0] =='P' && e->buff[1] == 'l')
 		board_alloc(e, -1);
 	else if (e->buff[0] == ' ' || e->buff[0] == '0')
@@ -194,11 +211,18 @@ int			main()
 	char	c;
 	t_env	e;
 
+	e.out = 0;//ft_putstr_fd("demarage du prog\n", 2);
 	if (get_next_line(0, &(e).buff) > 0)
 		c = e.buff[10] == '1' ? 'o' : 'x';
-	while (get_next_line(0, &(e).buff) > 0)
+	while (!e.out && get_next_line(0, &(e).buff) > 0)
 		call_fctn(&e);
 	play_mf(&e, c);
+	//ft_putendl_fd("fini",2);
+	ft_putnbr(e.playy);
+	ft_putchar(' ');
+	ft_putnbr(e.playx);
+	ft_putchar('\n');
+//	ft_putendl_fd("fini",2);
 
 
 
@@ -223,5 +247,6 @@ int			main()
 		i++;
 	}*/
 	free(e.piece);
+	free(e.board);
 	return (0);
 }
