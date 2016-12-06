@@ -86,7 +86,7 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 				//ft_putendl_fd("]", 2);
 	}
 	while (y < e->spy)
-	{ //boucle infini
+	{
 		while (x < e->spx)
 		{
 			if (e->piece[y][x] == '.')
@@ -95,8 +95,9 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 				ret--;
 			else if (x != e->px && y != e->py && e->board[by + y][bx + x] != '.' && e->piece[y][x] == '*')
 				return (ret);
-
-			x++;//ft_putstr_fd("ret dans while x[", 2);
+				//compare_board_and_piece(e, bx + x, by + y, c);
+			x++;
+			//ft_putstr_fd("ret dans while x[", 2);
 		//	ft_putnbr_fd(ret, 2);
 				//	ft_putendl_fd("]", 2);
 					if (!ret)
@@ -107,10 +108,8 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 						ft_putchar(' ');
 						ft_putnbr(e->playx);
 						ft_putchar('\n');
-						//ft_putchar('\n');
 						return (ret);
 					}
-
 		}//ft_putstr_fd("ret dans while y[", 2);
 	//	ft_putnbr_fd(ret, 2);
 				//ft_putendl_fd("]", 2);
