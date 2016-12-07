@@ -72,8 +72,12 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 //	ft_putstr_fd("ret au debut [", 2);
 	//ft_putnbr_fd(ret, 2);
 		//	ft_putendl_fd("]", 2);
-	if (bx - x < 0 || by - y < 0 || bx - x + e->spx > e->sbx || by - y + e->spy > e->sby)
+	if (bx + (e->spx - x) < 0 || by + (e->spy - y) < 0 || bx + (e->spx - x) > e->sbx || by + (e->spy - y) > e->sby)
+	{
+		fprintf(stderr, "laaaaaaaaa %d    %d  x:%d  y:%d bx:%d by:%d\n", bx + (e->spx - x  + 1), by + (e->spy - y  + 1), x, y, bx, by);
 		return (ret);
+	}
+
 	if (e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == c)
 	{
 		ret--;
@@ -100,6 +104,7 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 			//ft_putstr_fd("ret dans while x[", 2);
 		//	ft_putnbr_fd(ret, 2);
 				//	ft_putendl_fd("]", 2);
+				fprintf(stderr, "laaaaaaaaa bx:%d by:%d\n", bx + x, by + y);
 					if (!ret)
 					{
 						e->playx = bx - e->px;
