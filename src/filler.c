@@ -74,7 +74,7 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 		//	ft_putendl_fd("]", 2);
 	if (bx + (e->spx - x) < 0 || by + (e->spy - y) < 0 || bx + (e->spx - x) > e->sbx || by + (e->spy - y) > e->sby)
 	{
-		fprintf(stderr, "laaaaaaaaa %d    %d  x:%d  y:%d bx:%d by:%d\n", bx + (e->spx - x  + 1), by + (e->spy - y  + 1), x, y, bx, by);
+		fprintf(stderr, "laaaaaaaaa spx:%d spy:%d   %d    %d  x:%d  y:%d bx:%d by:%d\n",e->spx, e->spy,  bx + (e->spx - x  + 1), by + (e->spy - y  + 1), x, y, bx, by);
 		return (ret);
 	}
 
@@ -104,7 +104,7 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 			//ft_putstr_fd("ret dans while x[", 2);
 		//	ft_putnbr_fd(ret, 2);
 				//	ft_putendl_fd("]", 2);
-				fprintf(stderr, "laaaaaaaaa bx:%d by:%d\n", bx + x, by + y);
+	//			fprintf(stderr, "laaaaaaaaa bx:%d by:%d\n", bx + x, by + y);
 					if (!ret)
 					{
 						e->playx = bx - e->px;
@@ -156,15 +156,24 @@ void		fill_piece(t_env *e)
 	int		y;
 	int		x;
 	int		r;
+	int		maxx;
+	int		maxy;
 
+	maxx = 0;
+	maxy = 0;
 	r = 0;
 	y = 0;
-	while (y < e->spy && get_next_line(0, &(e)->buff) > 0)
+	while (y < e->spy  && get_next_line(0, &(e)->buff) > 0)
 	{
 		x = 0;
 		while (x < e->spx)
 		{
 			e->piece[y][x] = e->buff[x];
+			if (e->piece[y][x] == '*' && x + 1 >= maxx && y + 1 >= maxy)
+			{
+				maxx = x + 1;
+				maxy = y + 1;
+			}
 			if (!r && e->piece[y][x] == '*')
 			{
 				e->px = x;
@@ -175,6 +184,8 @@ void		fill_piece(t_env *e)
 		}
 		y++;
 	}
+	e->spx = maxx;
+	e->spy = maxy;
 	//ft_putstr_fd("sort de fill piece\n", 2);
 	e->out = 1;
 }
