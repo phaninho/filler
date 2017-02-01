@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 17:00:45 by stmartin          #+#    #+#             */
-/*   Updated: 2016/11/29 17:51:10 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/02/01 20:37:37 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct		s_env
 	int		playx;
 	int		playy;
 	int		out;
+	int		play;
 }					t_env;
 
 #endif
