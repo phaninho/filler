@@ -17,8 +17,8 @@
 
 typedef struct		s_env
 {
-	char	**board;
 	char	*buff;
+	char	**board;
 	char	**piece;
 	int		sbx;
 	int		sby;

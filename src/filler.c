@@ -12,7 +12,7 @@
 
 #include "filler.h"
 #include <stdio.h>
-
+/*
 int			test_piece(t_env *e, int bx, int by)
 {
 	int		x;
@@ -45,10 +45,12 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 	int		x;
 	int		y;
 	int		ret;
+	int		starin;
 
+	starin = 0;
 	x = e->px;
 	y = e->py;
-	ret = e->spx * e->spy; // pour parcourir tous les elements de la piece
+	ret = e->spx * e->spy - 1; // pour parcourir tous les elements de la piece
 	//ft_putstr_fd("ret au debut [", 2);
 	//ft_putnbr_fd(ret, 2);
 		//	ft_putendl_fd("]", 2);
@@ -58,18 +60,6 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 	//	fprintf(stderr, "laaaaaaaaa spx:%d spy:%d   %d    %d  x:%d  y:%d bx:%d by:%d\n",e->spx, e->spy,  bx + (e->spx - x  + 1), by + (e->spy - y  + 1), x, y, bx, by);
 	//	return (ret);
 	//}
-
-	if (e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == c)
-	{
-
-		//bx = bx - e->px;
-		//by = by - e->py;
-		//x = 0;
-		//y = 0;
-	//	ft_putstr_fd("ret au premier dec [", 2);
-	//	ft_putnbr_fd(ret, 2);
-				//ft_putendl_fd("]", 2);
-	}
 	while (y < e->spy)
 	{
 		while (x < e->spx)
@@ -78,9 +68,13 @@ int			compare_board_and_piece(t_env *e, int bx, int by, char c)
 				ret--;
 			else if (e->piece[y][x] == '*' && e->board[y + by][x + bx] == '.')
 				ret--;
+			else if (e->piece[y][x] == '*' && (e->board[y + by][x + bx] == c || e->board[y + by][x + bx] == ft_toupper(c)) && !starin)
+			{
+				starin++;
+				ret--;
+			}
 			else if (x != e->px && y != e->py && e->board[by + y][bx + x] != '.' && e->piece[y][x] == '*')
 				return (ret);
-				//compare_board_and_piece(e, bx + x, by + y, c);
 			x++;
 			//ft_putstr_fd("ret dans while x[", 2);
 		//	ft_putnbr_fd(ret, 2);
@@ -136,53 +130,94 @@ int 	find_piece_star(t_env *e, int star)
 	}
 	return (-1);
 }
+*/
+
+int 		test_piece_on_board(t_env *e, int bx, int by)
+{
+	int		x;
+	int		y;
+	int		startx;
+	int		starty;
+
+	y = 0;
+	bx -= e->px;
+	by -= e->py;
+	startx = bx;
+	starty = by;
+//fprintf(stderr, "starty [%d] startx [%d] by=[%d] bx=[%d]\n", starty, startx, by, bx);
+	while (y < e->spy)
+	{
+		x = 0;
+		while (x < e->spx)
+		{
+			bx += x;
+			by += y;
+		//	if (e->piece[y][x] == '*' && e->board[by][bx] != '.')
+			//chercher dans ce ssecteur le segfault///////////////////////////////////////////////////////////////////////////////////
+			if (bx < 0 || by < 0 || bx > e->sbx || by > e->sby || (x != e->px && y != e->py && e->piece[y][x] == '*' && e->board[by][bx] != '.'))
+				return (1);
+			x++;
+		}
+		y++;
+	}
+	if (startx < 0)
+		return (1);
+	if (starty < 0)
+		return (1);
+	//fprintf(stderr, "////////////%d %d////////////", starty, startx);
+	ft_putnbr(starty);
+	ft_putchar(' ');
+	ft_putnbr(startx);
+	ft_putchar('\n');
+	return (0);
+}
+
+int			place_piece_on_board(t_env *e, int bx, int by)
+{
+	int		x;
+	int		y;
+	int 	ret;
+//fprintf(stderr, "ssssspy%d\n", e->spy);
+	ret = 1;
+	y = 0;
+	while (y < e->spy)
+	{
+		x = 0;
+		while (x < e->spx)
+		{
+			if (e->piece && e->piece[y] && e->piece[y][x] && e->piece[y][x] == '*')
+			{
+				e->px = x;
+				e->py = y;
+				ret = test_piece_on_board(e, bx, by);
+				if (ret || (x == e->spx - 1 && y == e->spy - 1))//possibilité de segfault a cette ligne et la ligne 157 
+					return (1);
+				//fprintf(stderr, "////////////by:%d bx:%d////////////\n", by, bx);
+			}
+			x++;
+		}
+		y++;
+	}
+	return (0);
+}
 
 void		play_mf(t_env *e, char c)
 {
-	//ligne a suivre : trouver le bon signe sur le tableau ensuite tester toutes les possiblites d'une piece en modifiant la coordonnee
-	//de l'etoile a placer sur le signe du tableau. Si toutes les possibilites sont teste, incrementer la coordonnee sur le tableau jusqu'a
-	//trouver a nouveau un signe, de la tester toutes les possibilites de la piece....
-
-	//ft_putstr_fd("||||||||||||demarage de playmf|||||||||||||\n", 2);
 	int		x;
 	int		y;
 	int		ret;
-	int		star;
-	//int		find_star;
 
-	//find_star = 0;
+	ret = 0;
 	e->px = 0;
 	e->py = 0;
-	ret = -1;
 	y = 0;
-	star = 0;
-	//find_piece_star(e, star);
-	//fprintf(stderr, "//////////////////////////spx: %d spx: %d sbx %d sby %d\n", e->spx, e->spy, e->sbx, e->sby);
-	while (ret && e->board[y])
+	while (y < e->sby)
 	{
 		x = 0;
-		while (ret && e->board[y][x])
+		while (x < e->sbx)
 		{
-			if (ret && (e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
-			{
-				if (find_piece_star(e, star) == 1)
-				{
-					star++;
-					ret = compare_board_and_piece(e, x, y, c);
-					//fprintf(stderr, "ret %d", ret);
-					//modifier compsre board pour qu'il affiche les bonnes coor ou bien retourne -1 au cas ou il faut tester
-					//de modifier les coordonnee de l'etoile dans la piece
-				}
-				else if (find_piece_star(e, star) == -1)
-				{
-					star = 0;
-					e->px = 0;
-					e->py = 0;
-				}
-				//ft_putstr_fd("ret dans playmf[", 2);
-				//ft_putnbr_fd(ret, 2);
-				//		ft_putendl_fd("]", 2);
-			}
+			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+				ret = place_piece_on_board(e, x, y);
 			x++;
 		}
 		y++;
@@ -231,17 +266,17 @@ void		add_piece(t_env *e)
 
 void		board_alloc(t_env *e, int i)
 {
-	if (e->buff[9] == '5')
+	if (e->buff[9] && e->buff[9] == '5')
 	{
 		e->sbx = 17;
 		e->sby = 15;
 	}
-	if (e->buff[9] == '4')
+	else if (e->buff[9] && e->buff[9] == '4')
 	{
 		e->sbx = 40;
 		e->sby = 24;
 	}
-	if (e->buff[9] == '0')
+	else if (e->buff[9] && e->buff[9] == '0')
 	{
 		e->sbx = 99;
 		e->sby = 100;
@@ -262,12 +297,15 @@ void		fill_board(t_env *e)
 
 	i = 0;
 	lnb = (char *)malloc(sizeof(char) * 3);
-	lnb[0] = e->buff[1];
-	lnb[1] = e->buff[2];
-	lnb[2] = '\0';
+	if (lnb && e->buff)
+	{
+		lnb[0] = e->buff[1];
+		lnb[1] = e->buff[2];
+		lnb[2] = '\0';
+	}
 	if (e->buff[0] == '0')
 	{
-		while (e->buff[i])
+		while (e->buff && e->buff[i])
 		{
 			e->board[ft_atoi(lnb)][i] = e->buff[i + 4];
 			i++;
@@ -278,11 +316,11 @@ void		fill_board(t_env *e)
 
 void		call_fctn(t_env *e, char c)
 {
-	if (e->buff[0] =='P' && e->buff[1] == 'l')
+	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
 		board_alloc(e, -1);
-	else if (e->buff[0] == ' ' || e->buff[0] == '0')
+	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
 		fill_board(e);
-	else if (e->buff[0] == 'P' && e->buff[1] == 'i')
+	else if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'i'))
 		add_piece(e);
 	if (e->play)
 		play_mf(e, c);
@@ -301,7 +339,9 @@ int			main()
 		c = e.buff[10] == '1' ? 'o' : 'x';
 	while (get_next_line(0, &(e).buff) > 0)
 		call_fctn(&e, c);
-	free(e.piece);
-	free(e.board);
+	//if (e.piece)
+	//	free(e.piece);
+	//if (e.board)
+	//	free(e.board);
 	return (0);
 }
