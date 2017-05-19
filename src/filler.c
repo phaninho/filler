@@ -144,7 +144,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 	by -= e->py;
 	startx = bx;
 	starty = by;
-//fprintf(stderr, "starty [%d] startx [%d] by=[%d] bx=[%d]\n", starty, startx, by, bx);
+	//dprintf(2, "starty [%d] startx [%d] by=[%d] bx=[%d]\n", starty, startx, by, bx);
 	while (y < e->spy)
 	{
 		x = 0;
@@ -152,8 +152,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 		{
 			bx += x;
 			by += y;
-		//	if (e->piece[y][x] == '*' && e->board[by][bx] != '.')
-			//chercher dans ce ssecteur le segfault///////////////////////////////////////////////////////////////////////////////////
+			//if (e->piece[y][x] == '*' && e->board[by][bx] != '.')
 			if (bx < 0 || by < 0 || bx > e->sbx || by > e->sby || (x != e->px && y != e->py && e->piece[y][x] == '*' && e->board[by][bx] != '.'))
 				return (1);
 			x++;
@@ -164,7 +163,6 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 		return (1);
 	if (starty < 0)
 		return (1);
-	//fprintf(stderr, "////////////%d %d////////////", starty, startx);
 	ft_putnbr(starty);
 	ft_putchar(' ');
 	ft_putnbr(startx);
@@ -189,8 +187,9 @@ int			place_piece_on_board(t_env *e, int bx, int by)
 			{
 				e->px = x;
 				e->py = y;
+				dprintf(2, "py[%d] px[%d]\n", e->py, e->px);
 				ret = test_piece_on_board(e, bx, by);
-				if (ret || (x == e->spx - 1 && y == e->spy - 1))//possibilité de segfault a cette ligne et la ligne 157 
+				if (ret)// || (x == e->spx - 1 && y == e->spy - 1))
 					return (1);
 				//fprintf(stderr, "////////////by:%d bx:%d////////////\n", by, bx);
 			}
