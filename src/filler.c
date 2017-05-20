@@ -150,10 +150,14 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 		x = 0;
 		while (x < e->spx)
 		{
+			if (x == e->px && y == e->py)
+				x++;
 			bx += x;
 			by += y;
 			//if (e->piece[y][x] == '*' && e->board[by][bx] != '.')
-			if (bx < 0 || by < 0 || bx > e->sbx || by > e->sby || (x != e->px && y != e->py && e->piece[y][x] == '*' && e->board[by][bx] != '.'))
+			//if (bx < 0 || by < 0 || bx > e->sbx || by > e->sby || (x != e->px && y != e->py && e->piece[y][x] == '*' && e->board[by][bx] != '.'))
+			if (((bx < 0 || by < 0) && e->piece[y][x] == '*') || ((bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || \
+			(bx >= 0 && by >= 0 && bx < e->sbx && by < e->sby && e->piece[y][x] == '*' && e->board[by][bx] != '.'))
 				return (1);
 			x++;
 		}
@@ -167,6 +171,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 	ft_putchar(' ');
 	ft_putnbr(startx);
 	ft_putchar('\n');
+	dprintf(2, "laaaaaaaaaaaaaaaaaaaaaaaaa\n");
 	return (0);
 }
 
@@ -178,26 +183,24 @@ int			place_piece_on_board(t_env *e, int bx, int by)
 //fprintf(stderr, "ssssspy%d\n", e->spy);
 	ret = 1;
 	y = 0;
-	while (y < e->spy)
+	while (ret && y < e->spy)
 	{
 		x = 0;
-		while (x < e->spx)
+		while (ret && x < e->spx)
 		{
 			if (e->piece && e->piece[y] && e->piece[y][x] && e->piece[y][x] == '*')
 			{
 				e->px = x;
 				e->py = y;
-				dprintf(2, "py[%d] px[%d]\n", e->py, e->px);
+				dprintf(2, "py[%d] px[%d] by[%d] bx[%d]\n", e->py, e->px, by, bx);
 				ret = test_piece_on_board(e, bx, by);
-				if (ret)// || (x == e->spx - 1 && y == e->spy - 1))
-					return (1);
 				//fprintf(stderr, "////////////by:%d bx:%d////////////\n", by, bx);
 			}
 			x++;
 		}
 		y++;
 	}
-	return (0);
+	return (ret);
 }
 
 void		play_mf(t_env *e, char c)
@@ -206,14 +209,14 @@ void		play_mf(t_env *e, char c)
 	int		y;
 	int		ret;
 
-	ret = 0;
+	ret = 1;
 	e->px = 0;
 	e->py = 0;
 	y = 0;
-	while (y < e->sby)
+	while (ret && y < e->sby)
 	{
 		x = 0;
-		while (x < e->sbx)
+		while (ret && x < e->sbx)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 				ret = place_piece_on_board(e, x, y);
@@ -221,6 +224,11 @@ void		play_mf(t_env *e, char c)
 		}
 		y++;
 	}
+	if (ret)
+		dprintf(2, "Koooooooooooooo\n");
+	else
+		dprintf(2, "Okkkkkkkkkkkkkkk\n");
+	//dprintf(2, "sorti\n");
 }
 
 void		fill_piece(t_env *e)
@@ -338,9 +346,9 @@ int			main()
 		c = e.buff[10] == '1' ? 'o' : 'x';
 	while (get_next_line(0, &(e).buff) > 0)
 		call_fctn(&e, c);
-	//if (e.piece)
-	//	free(e.piece);
-	//if (e.board)
-	//	free(e.board);
+	if (e.piece)
+		free(e.piece);
+	if (e.board)
+		free(e.board);
 	return (0);
 }
