@@ -6,7 +6,7 @@
 #    By: stmartin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/04 14:21:39 by stmartin          #+#    #+#              #
-#    Updated: 2016/11/25 11:18:42 by stmartin         ###   ########.fr        #
+#    Updated: 2017/05/20 14:22:40 by stmartin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LIB_PATH = ./libft/
 SRC_NAME = filler.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
-LIB_NAME = -lft -lmlx
+LIB_NAME = -lft
 NAME = filler_ressources/players/stmartin.filler
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
@@ -43,7 +43,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 lib:
 	@echo "\033[37;44m Make libft \033[0m"
-	@make -C ./libft/
+	@make -C $(LIB_PATH)
 
 clean:
 	rm -rf $(OBJ) $(OBJ_PATH)
