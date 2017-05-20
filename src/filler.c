@@ -139,13 +139,12 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 	int		startx;
 	int		starty;
 
+	dprintf(2, "test de la piece dans le tableau ==>\n");
 	y = 0;
 	bx -= e->px;
 	by -= e->py;
 	startx = bx;
 	starty = by;
-	if (startx < 0 || starty < 0)
-		return (1);
 	//dprintf(2, "starty [%d] startx [%d] by=[%d] bx=[%d]\n", starty, startx, by, bx);
 	while (y < e->spy)
 	{
@@ -167,7 +166,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 			if (/*((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || \
 			(bx >= 0 && by >= 0 && bx < e->sbx && by < e->sby && */ ((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || (e->piece[y][x] == '*' && e->board[by][bx] != '.'))
 			{
-				dprintf(2, "elimineeeeeeeeee\n");
+				dprintf(2, "XXXXXXXXX elimineeeeeeeeee\n");
 				return (1);
 			}
 			x++;
@@ -176,6 +175,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 	}
 	e->playx = startx;
 	e->playy = starty;
+	dprintf(2,"!!!!!!!!!!coord QUALIFIEEEEEE!!!!!!!!!!\n");
 	// ft_putnbr(starty);
 	// ft_putchar(' ');
 	// ft_putnbr(startx);
@@ -219,8 +219,6 @@ void		play_mf(t_env *e, char c)
 	int		ret;
 
 	ret = 1;
-	e->px = 0;
-	e->py = 0;
 	y = 0;
 	while (ret && y < e->sby)
 	{
@@ -228,7 +226,10 @@ void		play_mf(t_env *e, char c)
 		while (ret && x < e->sbx)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			{
+				dprintf(2, "*****nouvelle *  trouvee dans le tableau*****\n");
 				ret = place_piece_on_board(e, x, y);
+			}
 			x++;
 		}
 		y++;
@@ -335,16 +336,17 @@ void		call_fctn(t_env *e, char c)
 		add_piece(e);
 	if (e->play)
 	{
+		e->play = 0;
+		e->px = 0;
+		e->py = 0;
 		e->out++;
 		dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]\n", e->out, c);
 		play_mf(e, c);
+		dprintf(2, "coordonnee trouvee y:%d x:%d\n", e->playy, e->playx);
 		ft_putnbr(e->playy);
 		ft_putchar(' ');
 		ft_putnbr(e->playx);
 		ft_putchar('\n');
-		e->play = 0;
-		e->px = 0;
-		e->py = 0;
 	}
 }
 
