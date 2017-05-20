@@ -164,7 +164,7 @@ int 		test_piece_on_board(t_env *e, int bx, int by)
 			bx += x;
 			by += y;
 			if (/*((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || \
-			(bx >= 0 && by >= 0 && bx < e->sbx && by < e->sby && */ ((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || (e->piece[y][x] == '*' && e->board[by][bx] != '.'))
+			(bx >= 0 && by >= 0 && bx < e->sbx && by < e->sby && */ ((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') || (e->piece[y][x] == '*' && e->board[by][bx] == '*'))
 			{
 				dprintf(2, "XXXXXXXXX elimineeeeeeeeee\n");
 				return (1);
