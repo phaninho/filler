@@ -13,7 +13,7 @@
 #include "filler.h"
 #include <stdio.h>
 
-int 		test_piece_on_board(t_env *e, int bx, int by, char c)
+int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 {
 	int		x;
 	int		y;
@@ -23,6 +23,8 @@ int 		test_piece_on_board(t_env *e, int bx, int by, char c)
 
 	if (c == 'x')
 		oppos_c = 'o';
+	else
+		oppos_c = 'x';
 	y = 0;
 	bx -= e->px;
 	by -= e->py;
@@ -46,12 +48,14 @@ int 		test_piece_on_board(t_env *e, int bx, int by, char c)
 			// 	else
 			// 		break;
 			// }
-		//	if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
-			//	dprintf(2, "|||||||||board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
+			// if (x == e->px && y == e->py)
+			// 	dprintf(2, "piece coord: ");
+			// if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
+			// 	dprintf(2, "|||||||||board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
 			if (!(x == e->px && y == e->py) && (((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') \
 			|| (e->piece[y][x] == '*' && (e->board[by][bx] == c || e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == oppos_c || e->board[by][bx] == ft_toupper(oppos_c)))))
 			{
-			//	dprintf(2, "MP\n");
+			//	dprintf(2, "elimine board[%d:%d] piece[%d:%d][%c]\n", bx, by, x, y, e->piece[y][x]);
 				return (1);
 			}
 			bx++;
@@ -83,7 +87,7 @@ int			place_piece_on_board(t_env *e, int bx, int by, char c)
 				e->px = x;
 				e->py = y;
 				//dprintf(2, "test_piece\n");
-				ret = test_piece_on_board(e, bx, by, c);
+				ret = test_piece_in_board(e, bx, by, c);
 				//fprintf(stderr, "////////////by:%d bx:%d////////////\n", by, bx);
 			}
 			x++;
@@ -218,7 +222,7 @@ void		call_fctn(t_env *e, char c)
 		e->px = 0;
 		e->py = 0;
 		e->out++;
-		//dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]\n", e->out, c);
+		//dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]**************************************\n", e->out, c);
 		find_c_in_board(e, c);
 		//dprintf(2, "coordonnee trouvee y:%d x:%d\n", e->playy, e->playx);
 		ft_putnbr(e->playy);
