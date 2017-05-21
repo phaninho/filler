@@ -13,6 +13,13 @@
 #include "filler.h"
 #include <stdio.h>
 
+char		get_opponent_char(char c)
+{
+	if (c == 'x')
+		return('o');
+	return ('x');
+}
+
 int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 {
 	int		x;
@@ -21,10 +28,7 @@ int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 	int		starty;
 	char	oppos_c;
 
-	if (c == 'x')
-		oppos_c = 'o';
-	else
-		oppos_c = 'x';
+	oppos_c = get_opponent_char(c);
 	y = 0;
 	bx -= e->px;
 	by -= e->py;
@@ -36,18 +40,6 @@ int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 		bx = startx;
 		while (x < e->spx)
 		{
-			// if (x == e->px && y == e->py)
-			// {
-			// 	//if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
-			// 		//dprintf(2, "++++++++board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
-			// 	if (x < e->spx - 1)
-			// 	{
-			// 		bx++;
-			// 		x++;
-			// 	}
-			// 	else
-			// 		break;
-			// }
 			// if (x == e->px && y == e->py)
 			// 	dprintf(2, "piece coord: ");
 			// if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
@@ -116,6 +108,95 @@ void		find_c_in_board(t_env *e, char c)
 		}
 		y++;
 	}
+}
+
+int			cut_map_horiz_for_x(t_env *e, char c)
+{
+	int		x;
+	int		y;
+	int		ret;
+	int		xmax;
+	int		ymax;
+
+dprintf(2, "laaaaaaaaaaaasdadsfadjghahslfgkhldfghveiugsdlkvvnsflqG\n");
+	xmax = -1;
+	ymax = -1;
+	ret = 1;
+	y = 0;
+	while (ret && y < e->sby)
+	{
+		x = 0;
+		while (ret && x < e->sbx)
+		{
+			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			{
+					if (x > xmax)
+					{
+						xmax = x;
+						ymax = y;
+				//		ret = 0;
+					}
+					// if (x == e->sbx || y == e->sby)
+					// {
+					// 	find_c_in_board(e, c);
+					// }
+				// else if (y > ymax)
+				// {
+				// 	xmax = x;
+				// 	ymax = y;
+				// }
+			//	else if (xmax >= e->sbx / 2 + 1 && ymax == e->sby - 1)
+				//	ret = 0;
+			}
+			x++;
+		}
+		y++;
+	}
+	return (place_piece_on_board(e, xmax, ymax, c));
+}
+
+int			cut_the_map_for_x(t_env *e, char c)
+{
+	int		x;
+	int		y;
+	int		ret;
+	int		xmax;
+	int		ymax;
+
+	xmax = -1;
+	ymax = -1;
+	ret = 1;
+	y = 0;
+	while (ret && y < e->sby)
+	{
+		x = 0;
+		while (ret && x < e->sbx)
+		{
+			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			{
+					if (x > xmax || y > ymax)
+					{
+						xmax = x;
+						ymax = y;
+				//		ret = 0;
+					}
+					// if (x == e->sbx || y == e->sby)
+					// {
+					// 	find_c_in_board(e, c);
+					// }
+				// else if (y > ymax)
+				// {
+				// 	xmax = x;
+				// 	ymax = y;
+				// }
+			//	else if (xmax >= e->sbx / 2 + 1 && ymax == e->sby - 1)
+				//	ret = 0;
+			}
+			x++;
+		}
+		y++;
+	}
+	return (place_piece_on_board(e, xmax, ymax, c));
 }
 
 void		fill_piece(t_env *e)
@@ -210,6 +291,10 @@ void		fill_board(t_env *e)
 
 void		call_fctn(t_env *e, char c)
 {
+	int		cut_map_diag;
+	int		cut_map_horiz;
+
+	cut_map_horiz = 0;
 	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
 		board_alloc(e, -1);
 	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
@@ -221,10 +306,11 @@ void		call_fctn(t_env *e, char c)
 		e->play = 0;
 		e->px = 0;
 		e->py = 0;
-		e->out++;
-		//dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]**************************************\n", e->out, c);
-		find_c_in_board(e, c);
-		//dprintf(2, "coordonnee trouvee y:%d x:%d\n", e->playy, e->playx);
+		cut_map_diag = cut_the_map_for_x(e, c);
+		if (cut_map_diag)
+			cut_map_horiz = cut_map_horiz_for_x(e, c);
+		if (cut_map_horiz && cut_map_diag)
+			find_c_in_board(e, c);
 		ft_putnbr(e->playy);
 		ft_putchar(' ');
 		ft_putnbr(e->playx);
