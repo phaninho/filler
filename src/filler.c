@@ -34,29 +34,24 @@ int 		test_piece_on_board(t_env *e, int bx, int by, char c)
 		bx = startx;
 		while (x < e->spx)
 		{
-			if (x == e->px && y == e->py)
-			{
-				//if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
-					//dprintf(2, "++++++++board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
-				if (x < e->spx - 1)
-				{
-					bx++;
-					x++;
-				}
-				else if (x == e->spx - 1 && y < e->spy - 1)
-				{
-					bx = startx;
-					x = 0;
-					by++;
-					y++;
-				}
-			}
+			// if (x == e->px && y == e->py)
+			// {
+			// 	//if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
+			// 		//dprintf(2, "++++++++board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
+			// 	if (x < e->spx - 1)
+			// 	{
+			// 		bx++;
+			// 		x++;
+			// 	}
+			// 	else
+			// 		break;
+			// }
 		//	if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
 			//	dprintf(2, "|||||||||board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
-			if (((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') \
-			|| (e->piece[y][x] == '*' && (e->board[by][bx] == c || e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == oppos_c || e->board[by][bx] == ft_toupper(oppos_c))))
+			if (!(x == e->px && y == e->py) && (((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') \
+			|| (e->piece[y][x] == '*' && (e->board[by][bx] == c || e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == oppos_c || e->board[by][bx] == ft_toupper(oppos_c)))))
 			{
-				//dprintf(2, "change d'* dans la piece\n");
+			//	dprintf(2, "MP\n");
 				return (1);
 			}
 			bx++;
@@ -223,7 +218,7 @@ void		call_fctn(t_env *e, char c)
 		e->px = 0;
 		e->py = 0;
 		e->out++;
-		dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]\n", e->out, c);
+		//dprintf(2, "new playyyyyyyyyyyyyyy [tour: %d sym: %c]\n", e->out, c);
 		find_c_in_board(e, c);
 		//dprintf(2, "coordonnee trouvee y:%d x:%d\n", e->playy, e->playx);
 		ft_putnbr(e->playy);
