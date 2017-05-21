@@ -118,9 +118,72 @@ int			cut_map_horiz_for_x(t_env *e, char c)
 	int		xmax;
 	int		ymax;
 
-dprintf(2, "laaaaaaaaaaaasdadsfadjghahslfgkhldfghveiugsdlkvvnsflqG\n");
-	xmax = -1;
+	xmax = 100;
 	ymax = -1;
+	ret = 1;
+	y = 0;
+	while (ret && y < e->sby)
+	{
+		x = 0;
+		while (ret && x < e->sbx)
+		{
+			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			{
+					if (x < xmax)
+					{
+						xmax = x;
+						ymax = y;
+					}
+			}
+			x++;
+		}
+		y++;
+	}
+	return (place_piece_on_board(e, xmax, ymax, c));
+}
+
+int			cut_the_map_for_x(t_env *e, char c)
+{
+	int		x;
+	int		y;
+	int		ret;
+	int		xmax;
+	int		ymax;
+
+	xmax = 100;
+	ymax = 100;
+	ret = 1;
+	y = 0;
+	while (ret && y < e->sby)
+	{
+		x = 0;
+		while (ret && x < e->sbx)
+		{
+			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
+			{
+					if (x < xmax || y < ymax)
+					{
+						xmax = x;
+						ymax = y;
+					}
+			}
+			x++;
+		}
+		y++;
+	}
+	return (place_piece_on_board(e, xmax, ymax, c));
+}
+
+int			cut_map_horiz_for_o(t_env *e, char c)
+{
+	int		x;
+	int		y;
+	int		ret;
+	int		xmax;
+	int		ymax;
+
+	xmax = -100;
+	ymax = -100;
 	ret = 1;
 	y = 0;
 	while (ret && y < e->sby)
@@ -134,19 +197,7 @@ dprintf(2, "laaaaaaaaaaaasdadsfadjghahslfgkhldfghveiugsdlkvvnsflqG\n");
 					{
 						xmax = x;
 						ymax = y;
-				//		ret = 0;
 					}
-					// if (x == e->sbx || y == e->sby)
-					// {
-					// 	find_c_in_board(e, c);
-					// }
-				// else if (y > ymax)
-				// {
-				// 	xmax = x;
-				// 	ymax = y;
-				// }
-			//	else if (xmax >= e->sbx / 2 + 1 && ymax == e->sby - 1)
-				//	ret = 0;
 			}
 			x++;
 		}
@@ -155,7 +206,7 @@ dprintf(2, "laaaaaaaaaaaasdadsfadjghahslfgkhldfghveiugsdlkvvnsflqG\n");
 	return (place_piece_on_board(e, xmax, ymax, c));
 }
 
-int			cut_the_map_for_x(t_env *e, char c)
+int			cut_the_map_for_o(t_env *e, char c)
 {
 	int		x;
 	int		y;
@@ -178,19 +229,7 @@ int			cut_the_map_for_x(t_env *e, char c)
 					{
 						xmax = x;
 						ymax = y;
-				//		ret = 0;
 					}
-					// if (x == e->sbx || y == e->sby)
-					// {
-					// 	find_c_in_board(e, c);
-					// }
-				// else if (y > ymax)
-				// {
-				// 	xmax = x;
-				// 	ymax = y;
-				// }
-			//	else if (xmax >= e->sbx / 2 + 1 && ymax == e->sby - 1)
-				//	ret = 0;
 			}
 			x++;
 		}
@@ -306,9 +345,18 @@ void		call_fctn(t_env *e, char c)
 		e->play = 0;
 		e->px = 0;
 		e->py = 0;
-		cut_map_diag = cut_the_map_for_x(e, c);
-		if (cut_map_diag)
-			cut_map_horiz = cut_map_horiz_for_x(e, c);
+		if (c == 'o')
+		{
+			cut_map_diag = cut_the_map_for_o(e, c);
+			if (cut_map_diag)
+				cut_map_horiz = cut_map_horiz_for_o(e, c);
+		}
+		else
+		{
+			cut_map_diag = cut_the_map_for_x(e, c);
+			if (cut_map_diag)
+				cut_map_horiz = cut_map_horiz_for_x(e, c);
+		}
 		if (cut_map_horiz && cut_map_diag)
 			find_c_in_board(e, c);
 		ft_putnbr(e->playy);
