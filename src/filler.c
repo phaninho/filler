@@ -40,16 +40,9 @@ int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 		bx = startx;
 		while (x < e->spx)
 		{
-			// if (x == e->px && y == e->py)
-			// 	dprintf(2, "piece coord: ");
-			// if (by >= 0 && by < e->sby && bx >= 0 & bx < e->sbx && e->board && e->piece && e->board[by] && e->board[by][bx] && e->piece[y] && e->piece[y][x])
-			// 	dprintf(2, "|||||||||board[%d:%d][%c] piece[%d:%d][%c]\n", bx, by,e->board[by][bx], x, y, e->piece[y][x]);
 			if (!(x == e->px && y == e->py) && (((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') \
 			|| (e->piece[y][x] == '*' && (e->board[by][bx] == c || e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == oppos_c || e->board[by][bx] == ft_toupper(oppos_c)))))
-			{
-			//	dprintf(2, "elimine board[%d:%d] piece[%d:%d][%c]\n", bx, by, x, y, e->piece[y][x]);
 				return (1);
-			}
 			bx++;
 			x++;
 		}
@@ -78,9 +71,7 @@ int			place_piece_on_board(t_env *e, int bx, int by, char c)
 			{
 				e->px = x;
 				e->py = y;
-				//dprintf(2, "test_piece\n");
 				ret = test_piece_in_board(e, bx, by, c);
-				//fprintf(stderr, "////////////by:%d bx:%d////////////\n", by, bx);
 			}
 			x++;
 		}
@@ -119,7 +110,7 @@ int			cut_map_horiz_for_x(t_env *e, char c)
 	int		ymax;
 
 	xmax = 100;
-	ymax = -1;
+	ymax = 100;
 	ret = 1;
 	y = 0;
 	while (ret && y < e->sby)
@@ -182,8 +173,8 @@ int			cut_map_horiz_for_o(t_env *e, char c)
 	int		xmax;
 	int		ymax;
 
-	xmax = -100;
-	ymax = -100;
+	xmax = -2;
+	ymax = -2;
 	ret = 1;
 	y = 0;
 	while (ret && y < e->sby)
@@ -214,8 +205,8 @@ int			cut_the_map_for_o(t_env *e, char c)
 	int		xmax;
 	int		ymax;
 
-	xmax = -1;
-	ymax = -1;
+	xmax = -2;
+	ymax = -2;
 	ret = 1;
 	y = 0;
 	while (ret && y < e->sby)
@@ -345,7 +336,7 @@ void		call_fctn(t_env *e, char c)
 		e->play = 0;
 		e->px = 0;
 		e->py = 0;
-		if (c == 'o')
+		if ((c == 'o' && e->sby != 100) || (e->sby == 100 && c == 'x'))
 		{
 			cut_map_diag = cut_the_map_for_o(e, c);
 			if (cut_map_diag)
