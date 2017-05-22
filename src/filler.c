@@ -40,7 +40,9 @@ int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 		bx = startx;
 		while (x < e->spx)
 		{
-			if (!(x == e->px && y == e->py) && (((bx < 0 || by < 0 || bx >= e->sbx || by >= e->sby) && e->piece[y][x] == '*') \
+			if (by == e->sby - 1)
+				by = -1;
+			if (!(x == e->px && y == e->py) && (((bx < 0 || by < 0 || bx >= e->sbx /*|| by >= e->sby*/) && e->piece[y][x] == '*') \
 			|| (e->piece[y][x] == '*' && (e->board[by][bx] == c || e->board[by][bx] == ft_toupper(c) || e->board[by][bx] == oppos_c || e->board[by][bx] == ft_toupper(oppos_c)))))
 				return (1);
 			bx++;
@@ -173,8 +175,8 @@ int			cut_map_horiz_for_o(t_env *e, char c)
 	int		xmax;
 	int		ymax;
 
-	xmax = -2;
-	ymax = -2;
+	xmax =0;
+	ymax = 0;
 	ret = 1;
 	y = 0;
 	while (ret && y < e->sby)
@@ -357,18 +359,52 @@ void		call_fctn(t_env *e, char c)
 	}
 }
 
+static void		clear_image(t_env *e)
+{
+	int		y;
+
+	y = 0;
+	while (y <= e->img.szline * 1000)
+	{
+		e->img.data[y] = 0;
+		y++;
+	}
+}
+
+int 		expose_hook(t_env *e)
+{
+	clear_image(e);
+	while (get_next_line(0, &(e)->buff) > 0)
+		call_fctn(e, e->c);
+	return (0);
+}
+
+int			destroy_win(t_env *e)
+{
+	(void)e;
+	exit(1);
+	return (0);
+}
+
 int			main()
 {
-	char	c;
 	t_env	e;
 
 	e.px = 0;
 	e.py = 0;
 	e.play = 0;
 	e.out = 0;
+	if (!(e.mlx = mlx_init()))
+		ft_putstr("mlx_init error!\n");
 	if (get_next_line(0, &(e).buff) > 0)
-		c = e.buff[10] == '1' ? 'o' : 'x';
-	while (get_next_line(0, &(e).buff) > 0)
-		call_fctn(&e, c);
+		e.c = e.buff[10] == '1' ? 'o' : 'x';
+	e.win = mlx_new_window(e.mlx, 1000, 1000, "Filler Arena");
+	e.img.i = mlx_new_image(e.mlx, 1000, 1000);
+	mlx_expose_hook(e.win, expose_hook, &e);
+	mlx_hook(e.win, DESTROYNOTIFY, STRUCT_NOT_MASK, destroy_win, &e);
+	e.img.data = mlx_get_data_addr(e.img.i, &(e.img.bpp), &(e.img.szline),
+			&(e.img.endian));
+	free(e.buff);
+	mlx_loop(e.mlx);
 	return (0);
 }

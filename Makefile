@@ -6,19 +6,21 @@
 #    By: stmartin <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/03/04 14:21:39 by stmartin          #+#    #+#              #
-#    Updated: 2017/05/20 14:22:40 by stmartin         ###   ########.fr        #
+#    Updated: 2017/05/21 15:29:37 by stmartin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC_PATH = ./src/
 OBJ_PATH = ./obj/
-INC_PATH = ./include/ ./libft/
-LIB_PATH = ./libft/
+INC_PATH = ./include/ ./libft/ ./minilibx_macos/
+LIB_PATH = ./libft/ ./minilibx_macos/
 
 SRC_NAME = filler.c \
 
+FRAMEWORK = -framework OpenGL -framework Appkit
+
 OBJ_NAME = $(SRC_NAME:.c=.o)
-LIB_NAME = -lft
+LIB_NAME = -lft -lmlx
 NAME = filler_ressources/players/stmartin.filler
 
 SRC = $(addprefix $(SRC_PATH),$(SRC_NAME))
@@ -34,7 +36,7 @@ all: lib
 	@make $(NAME)
 
 $(NAME): $(OBJ)
-		$(CC) $(INC) $^ -o $@ $(LIB) $(LIB_NAME)
+		$(CC) $(INC) $^ -o $@ $(LIB) $(LIB_NAME) $(FRAMEWORK)
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p $(OBJ_PATH)
@@ -43,7 +45,9 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 lib:
 	@echo "\033[37;44m Make libft \033[0m"
-	@make -C $(LIB_PATH)
+	@make -C ./libft/
+	@echo "\033[37;44m Make minilibx \033[0m"
+	@make -C ./minilibx_macos/
 
 clean:
 	rm -rf $(OBJ) $(OBJ_PATH)
@@ -51,6 +55,7 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	@make -C ./libft/ fclean
+	@make -C ./minilibx_macos/ clean
 
 re: fclean
 	@$(MAKE) all
