@@ -321,18 +321,68 @@ void		fill_board(t_env *e)
 	free(lnb);
 }
 
-void		call_fctn(t_env *e, char c)
+void			image_put_pixel(t_env *e, int x, int y, unsigned long color)
+{
+	int		pos;
+	int		size;
+
+	size = ((y * 10 - 1) * e->img.szline) + (x * 10 * e->img.bpp / 8);
+	pos = (y * e->img.szline) + (x * e->img.bpp / 8);
+	if (pos > 0 && pos + 2 < size && x >= 0
+		&& (x * e->img.bpp / 8) < e->img.szline)
+	{
+		e->img.data[pos + 2] = color / 65536 % 256;
+		e->img.data[pos + 1] = color / 256 % 256;
+		e->img.data[pos] = color % 256;
+	}
+}
+
+void		print_board(t_env *e, int x, int y)
+{
+	int		dx;
+	int		dy;
+	int		dex;
+	int		dey;
+
+	dy = -1 + y * 10;
+	dex = x + 10;
+	dey = x + 10;
+	while (++dy < dey)
+	{
+		dx = -1 + x * 10;
+		while (++dx < dex)
+		{
+			if (e->board[y][x] == '.')
+				image_put_pixel(e, dx, dy, 0x918787);
+			else if (e->board[y][x] == 'X' || e->board[y][x] == 'x')
+				image_put_pixel(e, dx, dy, 0x212D9A);
+			else if (e->board[y][x] == 'O' || e->board[y][x] == 'o')
+				image_put_pixel(e, dx, dy, 0xAB2020);
+		}
+	}
+}
+
+void 		draw_window(t_env *e)
+{
+	int		x;
+	int		y;
+
+	y = -1;
+	while (++y < e->sby)
+	{
+		x = -1;
+		while (++x < e->sbx)
+			print_board(e, x, y);
+	}
+}
+
+	void	place_piece(t_env *e, char c)
 {
 	int		cut_map_diag;
 	int		cut_map_horiz;
 
 	cut_map_horiz = 0;
-	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
-		board_alloc(e, -1);
-	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
-		fill_board(e);
-	else if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'i'))
-		add_piece(e);
+	cut_map_diag = 0;
 	if (e->play)
 	{
 		e->play = 0;
@@ -359,6 +409,18 @@ void		call_fctn(t_env *e, char c)
 	}
 }
 
+void		call_fctn(t_env *e)
+{
+	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
+		board_alloc(e, -1);
+	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
+		fill_board(e);
+	else if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'i'))
+		add_piece(e);
+	if (e->play)
+		place_piece(e, e->c);
+}
+
 static void		clear_image(t_env *e)
 {
 	int		y;
@@ -371,19 +433,31 @@ static void		clear_image(t_env *e)
 	}
 }
 
-int 		expose_hook(t_env *e)
-{
-	clear_image(e);
-	while (get_next_line(0, &(e)->buff) > 0)
-		call_fctn(e, e->c);
-	return (0);
-}
-
 int			destroy_win(t_env *e)
 {
 	(void)e;
 	exit(1);
 	return (0);
+}
+
+int 		expose_hook(t_env *e)
+{
+	clear_image(e);
+	mlx_clear_window(e->mlx, e->win);
+	mlx_put_image_to_window(e->mlx, e->win, e->img.i, 0, 0);
+	return (0);
+}
+
+void		lets_print(t_env *e)
+{
+	draw_window(e);
+	e->win = mlx_new_window(e->mlx, 1000, 1000, "Filler Arena");
+	e->img.i = mlx_new_image(e->mlx, 1000, 1000);
+	mlx_expose_hook(e->win, expose_hook, e);
+	mlx_hook(e->win, DESTROYNOTIFY, STRUCT_NOT_MASK, destroy_win, &e);
+	e->img.data = mlx_get_data_addr(e->img.i, &(e->img.bpp), &(e->img.szline),
+			&(e->img.endian));
+	mlx_loop(e->mlx);
 }
 
 int			main()
@@ -394,17 +468,14 @@ int			main()
 	e.py = 0;
 	e.play = 0;
 	e.out = 0;
-	if (!(e.mlx = mlx_init()))
-		ft_putstr("mlx_init error!\n");
+	//if (!(e.mlx = mlx_init()))
+		//ft_putstr("mlx_init error!\n");
 	if (get_next_line(0, &(e).buff) > 0)
 		e.c = e.buff[10] == '1' ? 'o' : 'x';
-	e.win = mlx_new_window(e.mlx, 1000, 1000, "Filler Arena");
-	e.img.i = mlx_new_image(e.mlx, 1000, 1000);
-	mlx_expose_hook(e.win, expose_hook, &e);
-	mlx_hook(e.win, DESTROYNOTIFY, STRUCT_NOT_MASK, destroy_win, &e);
-	e.img.data = mlx_get_data_addr(e.img.i, &(e.img.bpp), &(e.img.szline),
-			&(e.img.endian));
+	while (get_next_line(0, &(e).buff) > 0)
+		call_fctn(&e);
+	/*lets_print(&e);
+	expose_hook(&e);*/
 	free(e.buff);
-	mlx_loop(e.mlx);
 	return (0);
 }
