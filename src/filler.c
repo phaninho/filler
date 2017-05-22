@@ -53,6 +53,10 @@ int 		test_piece_in_board(t_env *e, int bx, int by, char c)
 	}
 	e->playx = startx;
 	e->playy = starty;
+	// ft_putnbr(starty);
+	// ft_putchar(' ');
+	// ft_putnbr(startx);
+	// ft_putchar('\n');
 	return (0);
 }
 
@@ -409,18 +413,6 @@ void 		draw_window(t_env *e)
 	}
 }
 
-void		call_fctn(t_env *e)
-{
-	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
-		board_alloc(e, -1);
-	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
-		fill_board(e);
-	else if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'i'))
-		add_piece(e);
-	if (e->play)
-		place_piece(e, e->c);
-}
-
 static void		clear_image(t_env *e)
 {
 	int		y;
@@ -460,6 +452,23 @@ void		lets_print(t_env *e)
 	mlx_loop(e->mlx);
 }
 
+	void		call_fctn(t_env *e)
+{
+//	if (get_next_line(0, &(e)->buff) > 0)
+	//{
+		if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
+			board_alloc(e, -1);
+		else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
+			fill_board(e);
+		else if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'i'))
+			add_piece(e);
+		if (e->play)
+			place_piece(e, e->c);
+		free(e->buff);
+	//}
+	//return (1);
+}
+
 int			main()
 {
 	t_env	e;
@@ -467,15 +476,22 @@ int			main()
 	e.px = 0;
 	e.py = 0;
 	e.play = 0;
-	e.out = 0;
-	//if (!(e.mlx = mlx_init()))
-		//ft_putstr("mlx_init error!\n");
+	e.out = 1;
+	// if (!(e.mlx = mlx_init()))
+	// {
+	// 	ft_putstr("mlx_init error!\n");
+	// 	return (1);
+	// }
 	if (get_next_line(0, &(e).buff) > 0)
+	{
 		e.c = e.buff[10] == '1' ? 'o' : 'x';
+		free(e.buff);
+	}
 	while (get_next_line(0, &(e).buff) > 0)
 		call_fctn(&e);
+	// 	mlx_loop_hook(e.mlx, call_fctn, &e);
+	// 	mlx_loop(e.mlx);
 	/*lets_print(&e);
 	expose_hook(&e);*/
-	free(e.buff);
 	return (0);
 }
