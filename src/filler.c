@@ -101,6 +101,10 @@ void		find_c_in_board(t_env *e, char c)
 		}
 		y++;
 	}
+	y = -1;
+	while (e->piece && e->piece[++y])
+		free(e->piece[y]);
+	free(e->piece);
 }
 
 int			cut_map_horiz_for_x(t_env *e, char c)
@@ -389,11 +393,11 @@ void		print_board(t_env *e, int x, int y)
 		while (++dx < ex)
 		{
 			if (e->board[y][x] == '.')
-				image_put_pixel(e, dx, dy, 0x918787);
+				image_put_pixel((void*)e, dx, dy, 0x918787);
 			else if (e->board[y][x] == 'X' || e->board[y][x] == 'x')
-				image_put_pixel(e, dx, dy, 0x212D9A);
+				image_put_pixel((void*)e, dx, dy, 0x212D9A);
 			else if (e->board[y][x] == 'O' || e->board[y][x] == 'o')
-				image_put_pixel(e, dx, dy, 0xAB2020);
+				image_put_pixel((void*)e, dx, dy, 0xAB2020);
 		}
 	}
 }
@@ -403,7 +407,7 @@ void 		draw_window(t_env *e)
 	int		x;
 	int		y;
 
-	clear_image(e);
+	//clear_image(e);
 	y = -1;
 	while (++y < e->sby)
 	{
@@ -413,19 +417,22 @@ void 		draw_window(t_env *e)
 	}
 }
 
-void		write_coord(t_env *e)
+void		write_coord(void *env)
 {
-		if (e->playy == -100 && e->playx == -100)
-		{
-			ft_putstr("0 0\n");
-			mlx_destroy_image(e->mlx, e->img.i);
-			mlx_destroy_window(e->mlx, e->win);
+	t_env		*e;
+
+	e = (t_env*)env;
+	if (e->playy == -100 && e->playx == -100)
+	{
+		ft_putstr("0 0\n");
+		mlx_destroy_image(e->mlx, e->img.i);
+		mlx_destroy_window(e->mlx, e->win);
 			exit (1);
-		}
-		ft_putnbr(e->playy);
-		ft_putchar(' ');
-		ft_putnbr(e->playx);
-		ft_putchar('\n');
+	}
+	ft_putnbr(e->playy);
+	ft_putchar(' ');
+	ft_putnbr(e->playx);
+	ft_putchar('\n');
 }
 
 int 		expose_hook(void *env)
@@ -467,12 +474,14 @@ void		place_piece(t_env *e, char c)
 		if (cut_map_horiz && cut_map_diag)
 			find_c_in_board(e, c);
 		draw_window(e);
-		expose_hook(e);
+		int y = -1;
+		while (e->board && e->board[++y])
+			free(e->board[y]);
+		free(e->board);
+		expose_hook((void*)e);
 		write_coord(e);
 	}
 }
-
-
 
 int			destroy_win(t_env *e)
 {
@@ -488,11 +497,8 @@ int		key_hook(int kc)
 	return (0);
 }
 
-void		lets_print(void *env)
+void		lets_print(t_env *e)
 {
-	t_env	*e;
-
-	e = (t_env*)env;
 	e->win = mlx_new_window(e->mlx, e->sbx * 10,  e->sby * 10, "Filler Arena");
 	e->img.i = mlx_new_image(e->mlx, 1000, 1000);
 	mlx_expose_hook(e->win, expose_hook, e);
@@ -534,7 +540,6 @@ int			main()
 	e.px = 0;
 	e.py = 0;
 	e.play = 0;
-	e.out = 1;
 	if (!(e.mlx = mlx_init()))
 	{
 		ft_putstr("mlx_init error!\n");

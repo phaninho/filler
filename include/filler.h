@@ -47,7 +47,6 @@ typedef struct		s_env
 	int				spy;
 	int				playx;
 	int				playy;
-	int				out;
 	int				play;
 }									t_env;
 
