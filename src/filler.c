@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/23 17:23:16 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/23 18:00:25 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,7 +326,7 @@ void			image_put_pixel(t_env *e, int x, int y, unsigned long color)
 	int		pos;
 	int		size;
 
-	size = ((y * 10 - 1) * e->img.szline) + (x * 10 * e->img.bpp / 8);
+	size = ((e->sby * 10 - 1) * e->img.szline);
 	pos = (y * e->img.szline) + (x * e->img.bpp / 8);
 	if (pos > 0 && pos + 2 < size && x >= 0
 		&& (x * e->img.bpp / 8) < e->img.szline)
@@ -379,8 +379,8 @@ void		print_board(t_env *e, int x, int y)
 
 	dx = -1 + x * 10;
 	dy = -1 + y * 10;
-	ex = x + 10;
-	ey = x + 10;
+	ex = dx + 10;
+	ey = dy + 10;
 	while (++dy < ey)
 	{
 		dx = ex - 10;
@@ -426,11 +426,11 @@ void		write_coord(t_env *e)
 		ft_putchar('\n');
 }
 
-int 		expose_hook(void *env)
+int 		expose_hook(t_env *e)
 {
-	t_env	*e;
+	//t_env	*e;
 
-	e = (t_env*)env;
+	//e = (t_env*)env;
 	mlx_clear_window(e->mlx, e->win);
 	mlx_put_image_to_window(e->mlx, e->win, e->img.i, 0, 0);
 	return (0);
@@ -541,7 +541,5 @@ int			main()
 		//call_fctn(&e);
 		mlx_loop_hook(e.mlx, call_fctn, &e);
 		mlx_loop(e.mlx);
-	/*lets_print(&e);
-	*/
-	return (0);
+		return (0);
 }
