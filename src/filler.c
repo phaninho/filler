@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2017/01/17 17:25:06 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/23 16:04:04 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,6 +389,8 @@ void 		draw_window(t_env *e)
 	cut_map_diag = 0;
 	if (e->play)
 	{
+		e->playx = -100;
+		e->playy = -100;
 		e->play = 0;
 		e->px = 0;
 		e->py = 0;
@@ -406,6 +408,13 @@ void 		draw_window(t_env *e)
 		}
 		if (cut_map_horiz && cut_map_diag)
 			find_c_in_board(e, c);
+		if (e->playy == -100 && e->playx == -100)
+		{
+			ft_putstr("0 0\n");
+		//	mlx_destroy_image(e->mlx, e->img.i);
+		//	mlx_destroy_window(e->mlx, e->win);
+			exit (1);
+		}
 		ft_putnbr(e->playy);
 		ft_putchar(' ');
 		ft_putnbr(e->playx);
@@ -439,6 +448,13 @@ int 		expose_hook(t_env *e)
 	mlx_put_image_to_window(e->mlx, e->win, e->img.i, 0, 0);
 	return (0);
 }
+int		key_hook(int kc, t_env *e)
+{
+if (kc == 53)
+	exit(1);
+expose_hook(e);
+return (0);
+}
 
 void		lets_print(t_env *e)
 {
@@ -447,15 +463,16 @@ void		lets_print(t_env *e)
 	e->img.i = mlx_new_image(e->mlx, 1000, 1000);
 	mlx_expose_hook(e->win, expose_hook, e);
 	mlx_hook(e->win, DESTROYNOTIFY, STRUCT_NOT_MASK, destroy_win, &e);
+	mlx_hook(e->win, 2, 1L << 0, key_hook, e);
 	e->img.data = mlx_get_data_addr(e->img.i, &(e->img.bpp), &(e->img.szline),
 			&(e->img.endian));
 	mlx_loop(e->mlx);
 }
 
-	void		call_fctn(t_env *e)
+	int		call_fctn(t_env *e)
 {
-//	if (get_next_line(0, &(e)->buff) > 0)
-	//{
+	if (get_next_line(0, &(e)->buff) > 0)
+	{
 		if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
 			board_alloc(e, -1);
 		else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
@@ -465,8 +482,8 @@ void		lets_print(t_env *e)
 		if (e->play)
 			place_piece(e, e->c);
 		free(e->buff);
-	//}
-	//return (1);
+	}
+	return (1);
 }
 
 int			main()
@@ -477,20 +494,20 @@ int			main()
 	e.py = 0;
 	e.play = 0;
 	e.out = 1;
-	// if (!(e.mlx = mlx_init()))
-	// {
-	// 	ft_putstr("mlx_init error!\n");
-	// 	return (1);
-	// }
+	if (!(e.mlx = mlx_init()))
+	{
+		ft_putstr("mlx_init error!\n");
+		return (1);
+	}
 	if (get_next_line(0, &(e).buff) > 0)
 	{
 		e.c = e.buff[10] == '1' ? 'o' : 'x';
 		free(e.buff);
 	}
-	while (get_next_line(0, &(e).buff) > 0)
-		call_fctn(&e);
-	// 	mlx_loop_hook(e.mlx, call_fctn, &e);
-	// 	mlx_loop(e.mlx);
+	//while (get_next_line(0, &(e).buff) > 0)
+		//call_fctn(&e);
+		mlx_loop_hook(e.mlx, call_fctn, &e);
+		mlx_loop(e.mlx);
 	/*lets_print(&e);
 	expose_hook(&e);*/
 	return (0);
