@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/23 18:00:25 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/23 19:49:08 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,12 +321,14 @@ void		fill_board(t_env *e)
 	free(lnb);
 }
 
-void			image_put_pixel(t_env *e, int x, int y, unsigned long color)
+void			image_put_pixel(void *env, int x, int y, unsigned long color)
 {
 	int		pos;
 	int		size;
+	t_env	*e;
 
-	size = ((e->sby * 10 - 1) * e->img.szline);
+	e = (t_env*)env;
+	size = ((e->sby * 10 - 1) * e->img.szline) + (e->sby * 10 * e->img.bpp / 8);
 	pos = (y * e->img.szline) + (x * e->img.bpp / 8);
 	if (pos > 0 && pos + 2 < size && x >= 0
 		&& (x * e->img.bpp / 8) < e->img.szline)
@@ -344,10 +346,10 @@ static void			clear_image(t_env *e)
 	int		pos;
 
 	y = -1;
-	while (++y < 1000)
+	while (++y < e->sby * 10)
 	{
 		x = -1;
-		while (++x < e->img.szline)
+		while (++x < e->sbx * 10)
 		{
 			pos = (y * e->img.szline) + (x * e->img.bpp / 8);
 			e->img.data[pos] = 0;
@@ -426,11 +428,11 @@ void		write_coord(t_env *e)
 		ft_putchar('\n');
 }
 
-int 		expose_hook(t_env *e)
+int 		expose_hook(void *env)
 {
-	//t_env	*e;
+	t_env	*e;
 
-	//e = (t_env*)env;
+	e = (t_env*)env;
 	mlx_clear_window(e->mlx, e->win);
 	mlx_put_image_to_window(e->mlx, e->win, e->img.i, 0, 0);
 	return (0);
@@ -479,17 +481,19 @@ int			destroy_win(t_env *e)
 	return (0);
 }
 
-int		key_hook(int kc, t_env *e)
+int		key_hook(int kc)
 {
-if (kc == 53)
-	exit(1);
-expose_hook(e);
-return (0);
+	if (kc == 53)
+		exit(1);
+	return (0);
 }
 
-void		lets_print(t_env *e)
+void		lets_print(void *env)
 {
-	e->win = mlx_new_window(e->mlx, 1000, 1000, "Filler Arena");
+	t_env	*e;
+
+	e = (t_env*)env;
+	e->win = mlx_new_window(e->mlx, e->sbx * 10,  e->sby * 10, "Filler Arena");
 	e->img.i = mlx_new_image(e->mlx, 1000, 1000);
 	mlx_expose_hook(e->win, expose_hook, e);
 	mlx_hook(e->win, DESTROYNOTIFY, STRUCT_NOT_MASK, destroy_win, &e);
@@ -499,12 +503,16 @@ void		lets_print(t_env *e)
 //	mlx_loop(e->mlx);
 }
 
-	int		call_fctn(t_env *e)
+int		call_fctn(void *env)
 {
+	t_env	*e;
+
+	e = (t_env*)env;
 	if (get_next_line(0, &(e)->buff) > 0)
 	{
 		if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
 		{
+			clear_image(e);
 			lets_print(e);
 			board_alloc(e, -1);
 		}
@@ -539,7 +547,7 @@ int			main()
 	}
 	//while (get_next_line(0, &(e).buff) > 0)
 		//call_fctn(&e);
-		mlx_loop_hook(e.mlx, call_fctn, &e);
-		mlx_loop(e.mlx);
-		return (0);
+	mlx_loop_hook(e.mlx, call_fctn, &e);
+	mlx_loop(e.mlx);
+	return (0);
 }
