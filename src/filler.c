@@ -6,17 +6,17 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 16:59:57 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/24 18:41:17 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/24 19:05:23 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 #include <stdio.h>
 
-char		get_opponent_char(char c)
+char		goc(char c)
 {
 	if (c == 'x')
-		return('o');
+		return ('o');
 	return ('x');
 }
 
@@ -33,8 +33,6 @@ void		free_piece_and_board(t_env *e)
 		free(e->piece[y]);
 	free(e->piece);
 }
-
-
 
 void		print_coord(int x, int y)
 {
@@ -73,7 +71,7 @@ void		call_fctn(t_env *e, char c, int cut_map_horiz)
 	}
 }
 
-int			main()
+int			main(void)
 {
 	char	c;
 	t_env	e;

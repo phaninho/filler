@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 18:21:38 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/24 18:22:02 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/24 18:53:25 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ int			cut_map_horiz_for_x(t_env *e, char c, int xmax, int ymax)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 			{
-					if (x < xmax)
-					{
-						xmax = x;
-						ymax = y;
-					}
+				if (x < xmax)
+				{
+					xmax = x;
+					ymax = y;
+				}
 			}
 			x++;
 		}
@@ -55,11 +55,11 @@ int			cut_the_map_for_x(t_env *e, char c, int xmax, int ymax)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 			{
-					if (x < xmax || y < ymax)
-					{
-						xmax = x;
-						ymax = y;
-					}
+				if (x < xmax || y < ymax)
+				{
+					xmax = x;
+					ymax = y;
+				}
 			}
 			x++;
 		}
@@ -83,11 +83,11 @@ int			cut_map_horiz_for_o(t_env *e, char c, int xmax, int ymax)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 			{
-					if (x > xmax)
-					{
-						xmax = x;
-						ymax = y;
-					}
+				if (x > xmax)
+				{
+					xmax = x;
+					ymax = y;
+				}
 			}
 			x++;
 		}
@@ -111,11 +111,11 @@ int			cut_the_map_for_o(t_env *e, char c, int xmax, int ymax)
 		{
 			if ((e->board[y][x] == ft_toupper(c) || e->board[y][x] == c))
 			{
-					if (x > xmax || y > ymax)
-					{
-						xmax = x;
-						ymax = y;
-					}
+				if (x > xmax || y > ymax)
+				{
+					xmax = x;
+					ymax = y;
+				}
 			}
 			x++;
 		}

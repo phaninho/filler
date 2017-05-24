@@ -6,16 +6,16 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/23 17:00:45 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/24 18:35:01 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/24 19:05:36 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FILLER_H
 # define FILLER_H
 
-#include "libft.h"
+# include "libft.h"
 
-typedef struct		s_env
+typedef struct	s_env
 {
 	char	*buff;
 	char	**board;
@@ -29,16 +29,16 @@ typedef struct		s_env
 	int		playx;
 	int		playy;
 	int		play;
-}									t_env;
+}				t_env;
 
-char		get_opponent_char(char c);
-void		free_piece_and_board(t_env *e);
-void		find_c_in_board(t_env *e, char c);
-int			place_piece_on_board(t_env *e, int bx, int by, char c);
-void		alloc_and_fill(t_env *e);
-int			cut_map_horiz_for_x(t_env *e, char c, int xmax, int ymax);
-int			cut_map_horiz_for_o(t_env *e, char c, int xmax, int ymax);
-int			cut_the_map_for_x(t_env *e, char c, int xmax, int ymax);
-int			cut_the_map_for_o(t_env *e, char c, int xmax, int ymax);
+char			goc(char c);
+void			free_piece_and_board(t_env *e);
+void			find_c_in_board(t_env *e, char c);
+int				place_piece_on_board(t_env *e, int bx, int by, char c);
+void			alloc_and_fill(t_env *e);
+int				cut_map_horiz_for_x(t_env *e, char c, int xmax, int ymax);
+int				cut_map_horiz_for_o(t_env *e, char c, int xmax, int ymax);
+int				cut_the_map_for_x(t_env *e, char c, int xmax, int ymax);
+int				cut_the_map_for_o(t_env *e, char c, int xmax, int ymax);
 
 #endif

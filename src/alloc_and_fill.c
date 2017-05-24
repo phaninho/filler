@@ -6,7 +6,7 @@
 /*   By: stmartin <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/24 18:18:39 by stmartin          #+#    #+#             */
-/*   Updated: 2017/05/24 18:23:04 by stmartin         ###   ########.fr       */
+/*   Updated: 2017/05/24 18:52:57 by stmartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void		fill_piece(t_env *e)
 
 	tmp = NULL;
 	y = 0;
-	while (y < e->spy  && get_next_line(0, &tmp) > 0)
+	while (y < e->spy && get_next_line(0, &tmp) > 0)
 	{
 		x = 0;
 		while (x < e->spx)
@@ -105,9 +105,9 @@ void		fill_board(t_env *e)
 	free(lnb);
 }
 
-void alloc_and_fill(t_env *e)
+void		alloc_and_fill(t_env *e)
 {
-	if (e->buff && e->buff[0] && (e->buff[0] =='P' && e->buff[1] == 'l'))
+	if (e->buff && e->buff[0] && (e->buff[0] == 'P' && e->buff[1] == 'l'))
 		board_alloc(e, -1);
 	else if (e->buff && e->buff[0] && (e->buff[0] == ' ' || e->buff[0] == '0'))
 		fill_board(e);
